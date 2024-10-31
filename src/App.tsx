@@ -1,83 +1,29 @@
-import React, { useState } from 'react';
-import NumberFacts from './components/NumberFacts';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import useScrollRestoration from './hooks/useScrollRestoration';
 
-const App: React.FC = () => {
-  const [type, setType] = useState<string>('math');
-  const [number, setNumber] = useState<string>('');
-  const [random, setRandom] = useState<boolean>(false);
-  const [showFacts, setShowFacts] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+import Home from './pages/Home';
+import About from './pages/About';
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!random && isNaN(Number(number))) {
-      setError('Число должно быть в виде цифры');
-      return;
-    }
-    setError(null);
-    setShowFacts(true);
-  };
+function App() {
 
   return (
-      <div className="app">
-        <h1>Number Facts</h1>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>
-              <input
-                  type="radio"
-                  value="math"
-                  checked={type === 'math'}
-                  onChange={(e) => setType(e.target.value)}
-              />
-              Math
-            </label>
-            <label>
-              <input
-                  type="radio"
-                  value="trivia"
-                  checked={type === 'trivia'}
-                  onChange={(e) => setType(e.target.value)}
-              />
-              Trivia
-            </label>
-            <label>
-              <input
-                  type="radio"
-                  value="date"
-                  checked={type === 'date'}
-                  onChange={(e) => setType(e.target.value)}
-              />
-              Date
-            </label>
-          </div>
-          <div>
-            <label>
-              Number:
-              <input
-                  type="text"
-                  value={number}
-                  onChange={(e) => setNumber(e.target.value)}
-                  disabled={random}
-              />
-            </label>
-            <label>
-              <input
-                  type="checkbox"
-                  checked={random}
-                  onChange={() => setRandom(!random)}
-              />
-              Random Number
-            </label>
-          </div>
-          <button type="submit">Get Facts</button>
-          {error && <p className="error">{error}</p>}
-        </form>
-
-        {showFacts && <NumberFacts type={type} number={number} random={random} />}
-      </div>
+      <Router>
+        <ScrollRestorationWrapper />
+        <nav>
+          <Link to="/">Home</Link> |
+          <Link to="/about">About</Link> |
+        </nav>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </Router>
   );
-};
+}
 
+const ScrollRestorationWrapper = () => {
+  useScrollRestoration();
+  return null;
+};
 export default App;
